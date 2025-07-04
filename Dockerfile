@@ -18,9 +18,15 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Set Laravel permissions
+# Fix permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# ⚠️ Tell Apache to serve from the public folder
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Add Laravel’s .htaccess rewrite rules if not already present
+COPY ./public/.htaccess /var/www/html/public/.htaccess
 
 # Expose port
 EXPOSE 80
