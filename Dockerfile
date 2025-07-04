@@ -27,13 +27,5 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /e
 
 # Add Laravel’s .htaccess rewrite rules if not already present
 
-# Laravel setup commands
-RUN php artisan key:generate \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-COPY ./public/.htaccess /var/www/html/public/.htaccess
-
 # Expose port
 EXPOSE 80
