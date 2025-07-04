@@ -2,8 +2,12 @@ FROM php:8.2-apache
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    libzip-dev unzip git curl \
-    && docker-php-ext-install zip pdo pdo_mysql
+    libzip-dev \
+    unzip \
+    git \
+    curl \
+    libpq-dev \
+    && docker-php-ext-install zip pdo pdo_mysql pdo_pgsql
 
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
@@ -24,8 +28,6 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # ⚠️ Tell Apache to serve from the public folder
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
-# Add Laravel’s .htaccess rewrite rules if not already present
 
 # Expose port
 EXPOSE 80
