@@ -23,9 +23,9 @@ class PlayerController extends Controller
 
         if ($response->successful()) {
             $player = $response->json();
-            return view('index', ['player' => $player]);
+            return view('info', ['player' => $player]);
         } else {
-            return view('index', ['error' => 'Player not found or invalid tag.']);
+            return view('info', ['error' => 'Player not found or invalid tag.']);
         }
     }
 }
