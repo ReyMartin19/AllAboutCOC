@@ -1,4 +1,4 @@
-@php
+ @php
     $trophies = $player['trophies'];
     $leagueImage = 'Unranked_League.webp';
     $leagueName = 'Unranked';
