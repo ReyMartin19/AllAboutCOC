@@ -136,6 +136,8 @@
     <p class="text-red-500 text-lg">{{ $error }}</p>
     @endisset
  @include('moreInfo')
+ @include('troopsView')
+ @include('superTroops')
 </div>
 
 @endsection

@@ -1,35 +1,64 @@
-<div class="grid  gap-6">
-    @foreach($player['heroes'] as $hero)
+@php
+    // Define what equipment belongs to each hero
+    $heroEquipMap = [
+        'Barbarian King' => [
+            'Barbarian Puppet', 'Rage Vial', 'Earthquake Boots',
+            'Vampstache', 'Giant Gauntlet', 'Spiky Ball', 'Snake Bracelet'
+        ],
+        'Archer Queen' => [
+            'Archer Puppet', 'Invisibility Vial', 'Giant Arrow',
+            'Healer Puppet', 'Frozen Arrow', 'Magic Mirror', 'Action Figure'
+        ],
+        'Minion Prince' => [
+            'Henchmen Puppet', 'Dark Orb', 'Metal Pants',
+            'Noble Iron', 'Dark Crown'
+        ],
+        'Grand Warden' => [
+            'Eternal Tome', 'Life Gem', 'Rage Gem',
+            'Healing Tome', 'Fireball', 'Lavaloon Puppet'
+        ],
+        'Royal Champion' => [
+            'Royal Gem', 'Seeking Shield', 'Hog Rider Puppet',
+            'Haste Vial', 'Rocket Spear', 'Electro Boots'
+        ],
+    ];
+
+    // Convert heroEquipment to a collection for easier searching
+    $allOwnedEquip = collect($player['heroEquipment'] ?? []);
+@endphp
+
+<div class="grid grid-cols-5 gap-3">
+@foreach($player['heroes'] as $hero)
+    @php
+        $name = $hero['name'];
+        $allowedEquipment = $heroEquipMap[$name] ?? [];
+    @endphp
+
+    @if(array_key_exists($name, $heroEquipMap))
         <div class="p-4 bg-blue-100 rounded">
             <p class="text-lg font-semibold mb-2">
-                {{ $hero['name'] ?? 'Unknown Hero' }} - Level {{ $hero['level'] ?? '?' }}
+                {{ $name }} - Level {{ $hero['level'] ?? '?' }}
             </p>
 
-            <div class="grid grid-cols-3 gap-2">
-                @foreach($player['heroEquipment'] as $equip)
-
+            <div class="grid gap-2">
+                @foreach($allowedEquipment as $equipName)
                     @php
-                        // Check if the current hero has this equipment
-                        $isOwned = false;
-
-                        if (!empty($hero['equipment'])) {
-                            foreach ($hero['equipment'] as $owned) {
-                                if ($owned['name'] === $equip['name']) {
-                                    $isOwned = true;
-                                    break;
-                                }
-                            }
-                        }
+                        // Find if player owns this equipment (regardless of whether it's equipped)
+                        $equip = $allOwnedEquip->firstWhere('name', $equipName);
+                        $isOwned = $equip && $equip['level'] >= 1;
+                        $level = $equip['level'] ?? 0;
+                        $maxLevel = $equip['maxLevel'] ?? '??';
                     @endphp
 
                     <p class="{{ $isOwned ? 'bg-green-200' : 'bg-red-200' }} p-2 rounded flex justify-between items-center">
-                        <span>{{ $equip['name'] }}</span>
-                        <span class="text-sm italic">{{ $isOwned ? 'Acquired (Lvl ' . $equip['level'] . ')' : 'Not Acquired' }}</span>
+                        <span>{{ $equipName }}</span>
+                        <span class="text-sm italic">
+                            {{ $isOwned ? 'Acquired (Lvl ' . $level . ' / ' . $maxLevel . ')' : 'Not Acquired' }}
+                        </span>
                     </p>
-
                 @endforeach
             </div>
         </div>
-    @endforeach
+    @endif
+@endforeach
 </div>
-
