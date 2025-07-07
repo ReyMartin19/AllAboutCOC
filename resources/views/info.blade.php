@@ -137,7 +137,7 @@
     @endisset
  @include('moreInfo')
  @include('troopsView')
- @include('superTroops')
+ @include('spells')
 </div>
 
 @endsection
