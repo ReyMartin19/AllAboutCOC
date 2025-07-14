@@ -1,3 +1,4 @@
+@isset($player)
 @php
 // Categories
 $elixirTroops = [
@@ -107,3 +108,4 @@ $categoryFolders = [
         </div>
     @endif
 @endforeach
+@endisset

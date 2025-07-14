@@ -1,3 +1,4 @@
+@isset($player)
 @php
 // Define spell categories
 $elixirSpells = [
@@ -53,3 +54,4 @@ $folderPaths = [
         </div>
     @endif
 @endforeach
+@endisset

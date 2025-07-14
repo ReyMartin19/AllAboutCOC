@@ -1,76 +1,78 @@
- @php
-    $trophies = $player['trophies'];
-    $leagueImage = 'Unranked_League.webp';
-    $leagueName = 'Unranked';
+@isset($player)
+    @php
+        $trophies = $player['trophies'];
+        $leagueImage = 'Unranked_League.webp';
+        $leagueName = 'Unranked';
 
-    if ($trophies >= 400 && $trophies <= 499) {
-        $leagueImage = 'Bronze_League.webp';
-        $leagueName = 'Bronze III';
-    } elseif ($trophies <= 599) {
-        $leagueImage = 'Bronze_League.webp';
-        $leagueName = 'Bronze II';
-    } elseif ($trophies <= 799) {
-        $leagueImage = 'Bronze_League.webp';
-        $leagueName = 'Bronze I';
-    } elseif ($trophies <= 999) {
-        $leagueImage = 'Silver_League.webp';
-        $leagueName = 'Silver III';
-    } elseif ($trophies <= 1199) {
-        $leagueImage = 'Silver_League.webp';
-        $leagueName = 'Silver II';
-    } elseif ($trophies <= 1399) {
-        $leagueImage = 'Silver_League.webp';
-        $leagueName = 'Silver I';
-    } elseif ($trophies <= 1599) {
-        $leagueImage = 'Gold_League.webp';
-        $leagueName = 'Gold III';
-    } elseif ($trophies <= 1799) {
-        $leagueImage = 'Gold_League.webp';
-        $leagueName = 'Gold II';
-    } elseif ($trophies <= 1999) {
-        $leagueImage = 'Gold_League.webp';
-        $leagueName = 'Gold I';
-    } elseif ($trophies <= 2199) {
-        $leagueImage = 'Crystal_League.webp';
-        $leagueName = 'Crystal III';
-    } elseif ($trophies <= 2399) {
-        $leagueImage = 'Crystal_League.webp';
-        $leagueName = 'Crystal II';
-    } elseif ($trophies <= 2599) {
-        $leagueImage = 'Crystal_League.webp';
-        $leagueName = 'Crystal I';
-    } elseif ($trophies <= 2799) {
-        $leagueImage = 'Master_League.webp';
-        $leagueName = 'Master III';
-    } elseif ($trophies <= 2999) {
-        $leagueImage = 'Master_League.webp';
-        $leagueName = 'Master II';
-    } elseif ($trophies <= 3199) {
-        $leagueImage = 'Master_League.webp';
-        $leagueName = 'Master I';
-    } elseif ($trophies <= 3499) {
-        $leagueImage = 'Champion_League.webp';
-        $leagueName = 'Champion III';
-    } elseif ($trophies <= 3799) {
-        $leagueImage = 'Champion_League.webp';
-        $leagueName = 'Champion II';
-    } elseif ($trophies <= 4099) {
-        $leagueImage = 'Champion_League.webp';
-        $leagueName = 'Champion I';
-    } elseif ($trophies <= 4399) {
-        $leagueImage = 'Titan_League.webp';
-        $leagueName = 'Titan III';
-    } elseif ($trophies <= 4699) {
-        $leagueImage = 'Titan_League.webp';
-        $leagueName = 'Titan II';
-    } elseif ($trophies <= 4999) {
-        $leagueImage = 'Titan_League.webp';
-        $leagueName = 'Titan I';
-    } elseif ($trophies >= 5000) {
-        $leagueImage = 'Legend_League.webp';
-        $leagueName = 'Legend League';
-    }
-@endphp
+        if ($trophies >= 400 && $trophies <= 499) {
+            $leagueImage = 'Bronze_League.webp';
+            $leagueName = 'Bronze III';
+        } elseif ($trophies <= 599) {
+            $leagueImage = 'Bronze_League.webp';
+            $leagueName = 'Bronze II';
+        } elseif ($trophies <= 799) {
+            $leagueImage = 'Bronze_League.webp';
+            $leagueName = 'Bronze I';
+        } elseif ($trophies <= 999) {
+            $leagueImage = 'Silver_League.webp';
+            $leagueName = 'Silver III';
+        } elseif ($trophies <= 1199) {
+            $leagueImage = 'Silver_League.webp';
+            $leagueName = 'Silver II';
+        } elseif ($trophies <= 1399) {
+            $leagueImage = 'Silver_League.webp';
+            $leagueName = 'Silver I';
+        } elseif ($trophies <= 1599) {
+            $leagueImage = 'Gold_League.webp';
+            $leagueName = 'Gold III';
+        } elseif ($trophies <= 1799) {
+            $leagueImage = 'Gold_League.webp';
+            $leagueName = 'Gold II';
+        } elseif ($trophies <= 1999) {
+            $leagueImage = 'Gold_League.webp';
+            $leagueName = 'Gold I';
+        } elseif ($trophies <= 2199) {
+            $leagueImage = 'Crystal_League.webp';
+            $leagueName = 'Crystal III';
+        } elseif ($trophies <= 2399) {
+            $leagueImage = 'Crystal_League.webp';
+            $leagueName = 'Crystal II';
+        } elseif ($trophies <= 2599) {
+            $leagueImage = 'Crystal_League.webp';
+            $leagueName = 'Crystal I';
+        } elseif ($trophies <= 2799) {
+            $leagueImage = 'Master_League.webp';
+            $leagueName = 'Master III';
+        } elseif ($trophies <= 2999) {
+            $leagueImage = 'Master_League.webp';
+            $leagueName = 'Master II';
+        } elseif ($trophies <= 3199) {
+            $leagueImage = 'Master_League.webp';
+            $leagueName = 'Master I';
+        } elseif ($trophies <= 3499) {
+            $leagueImage = 'Champion_League.webp';
+            $leagueName = 'Champion III';
+        } elseif ($trophies <= 3799) {
+            $leagueImage = 'Champion_League.webp';
+            $leagueName = 'Champion II';
+        } elseif ($trophies <= 4099) {
+            $leagueImage = 'Champion_League.webp';
+            $leagueName = 'Champion I';
+        } elseif ($trophies <= 4399) {
+            $leagueImage = 'Titan_League.webp';
+            $leagueName = 'Titan III';
+        } elseif ($trophies <= 4699) {
+            $leagueImage = 'Titan_League.webp';
+            $leagueName = 'Titan II';
+        } elseif ($trophies <= 4999) {
+            $leagueImage = 'Titan_League.webp';
+            $leagueName = 'Titan I';
+        } elseif ($trophies >= 5000) {
+            $leagueImage = 'Legend_League.webp';
+            $leagueName = 'Legend League';
+        }
+    @endphp
+@endisset
 
 @extends('layouts.layout')
 

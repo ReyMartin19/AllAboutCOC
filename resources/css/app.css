@@ -9,3 +9,10 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+.search-toggle {
+    @apply hover:bg-neutral-400 transition-all;
+}
+
+.active-tab {
+    @apply text-white border-b-3 border-blue-500;
+}
