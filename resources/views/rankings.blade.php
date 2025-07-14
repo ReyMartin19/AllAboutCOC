@@ -165,23 +165,23 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div>
                 <h4 class="text-lg font-bold mb-4 text-blue-400">Contact Info</h4>
-                <p class="text-gray-300 mb-2">support@clashsearch.com</p>
-                <p class="text-gray-300">+1 (555) 123-4567</p>
+                <p class="text-gray-300 mb-2">reymartinagluya8@gmail.com</p>
+                <p class="text-gray-300">+63 9951 4386 85</p>
             </div>
             <div>
-                <h4 class="text-lg font-bold mb-4 text-blue-400">Follow Us</h4>
+                <h4 class="text-lg font-bold mb-4 text-blue-400">Follow Me</h4>
                 <div class="flex space-x-4">
-                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
+                    <a href="x.com" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
                         <i class="fa-brands fa-twitter"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
-                        <i class="fa-brands fa-discord"></i>
+                    <a href="facebook.com" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
+                        <i class="fa-brands fa-facebook"></i>
                     </a>
-                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
+                    <a href="instagram.com" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="reddit.com" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
                         <i class="fa-brands fa-reddit"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
-                        <i class="fa-brands fa-youtube"></i>
                     </a>
                 </div>
             </div>

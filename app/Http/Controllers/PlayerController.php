@@ -73,7 +73,7 @@ class PlayerController extends Controller
                 
             if ($clanResponse->successful()) {
                 $clan = $clanResponse->json();
-                return view('clan', ['clans' => [$clan]]);
+                return view('clan_preview', ['clans' => [$clan]]);
             }
             
             // If neither found, show error
@@ -82,7 +82,7 @@ class PlayerController extends Controller
         
         // If input doesn't start with #, treat as clan name search
         if (strlen($input) < 3) {
-            return view('clan', ['error' => 'Search term must be at least 3 characters long.']);
+            return view('clan_preview', ['error' => 'Search term must be at least 3 characters long.']);
         }
         
         $response = Http::withToken(env('COC_API_TOKEN'))
@@ -93,10 +93,10 @@ class PlayerController extends Controller
         
         if ($response->successful()) {
             $clans = $response->json();
-            return view('clan', ['clans' => $clans['items'] ?? []]);
+            return view('clan_preview', ['clans' => $clans['items'] ?? []]);
         }
         
-        return view('clan', ['error' => 'No clans found.']);
+        return view('clan_preview', ['error' => 'No clans found.']);
     }
 
 }
