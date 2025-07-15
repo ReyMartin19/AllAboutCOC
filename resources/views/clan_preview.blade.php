@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('content')
-<div class="max-w-md mx-auto p-6 ">
+<div class="max-w-md mx-auto mt-6 mb-8">
     {{-- Header with back button --}}
     <div class="flex items-center justify-between mb-8">
         <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors flex items-center space-x-2">
@@ -29,17 +29,17 @@
         @else
             {{-- Clan results --}}
             @foreach($clans as $clan)
-                <div class="bg-gray-800/30 border border-gray-700 rounded-xl p-6 hover:border-blue-500 transition-all duration-200 backdrop-blur-sm flex items-center justify-center space-x-4">
+                <div class="bg-gray-800/30 border border-gray-700 rounded-xl p-6 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 backdrop-blur-sm flex items-center justify-center space-x-4">
                     {{-- Clan badge and name --}}
                     <div class="flex items-center">
                         <img src="{{ $clan['badgeUrls']['small'] }}" 
                              alt="Clan Badge" 
                              class="w-16 h-16 object-contain">
-                        <div>
-                            <h3 class="text-xl font-bold text-white text-center">{{ $clan['name'] }}</h3>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold text-white">{{ $clan['name'] }}</h3>
+                            <div class="mt-1"></div> {{-- Added spacing here --}}
                             <span class="text-gray-400 text-sm">{{ $clan['tag'] }}</span>
                         </div>
-                        
                     </div>
 
                     {{-- Clan stats --}}
@@ -52,7 +52,15 @@
                             <p class="text-gray-400 text-sm">Points</p>
                             <p class="text-yellow-400 font-medium">{{ number_format($clan['clanPoints']) }}</p>
                         </div>
-                    </div>  
+                    </div>
+
+                    {{-- View button --}}
+                    <div class="pt-2">
+                        <a href="{{ route('clan', ['tag' => $clan['tag']]) }}" 
+                           class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                           View
+                        </a>
+                    </div>
                 </div>
             @endforeach
         @endif

@@ -22,5 +22,8 @@
         @yield('content')
     </main>
     
+    <footer class="bg-gray-950 border-t border-gray-800 py-12">
+        @include('footer')
+    </footer>
 </body>
 </html>

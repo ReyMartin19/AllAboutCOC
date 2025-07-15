@@ -99,4 +99,24 @@ class PlayerController extends Controller
         return view('clan_preview', ['error' => 'No clans found.']);
     }
 
+    public function clan(Request $request)
+    {
+       $tag = $request->query('tag');
+    
+       if (!$tag || !str_starts_with($tag, '#')) {
+            $tag = '#' . $tag;
+        }
+
+        $tag = urlencode(strtoupper($tag));
+
+        $response = Http::withToken(env('COC_API_TOKEN'))
+            ->get("https://api.clashofclans.com/v1/clans/{$tag}");
+
+        if ($response->successful()) {
+            $clan = $response->json();
+            return view('clan', compact('clan'));
+        } else {
+            return view('clan', ['error' => 'Clan not found or invalid tag.']);
+        }
+    }
 }
