@@ -95,6 +95,10 @@
         </div>
     </div>
 
+    
+</div>
+
+<div class="flex gap-8 mb-16 justify-center">
     {{-- Builder Base Clan trophies --}}
     <div class="bg-gray-900/30 backdrop-blur-sm rounded-2xl border border-gray-800 p-6 hover:border-blue-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10">
         <h3 class="text-xl font-bold mb-6 text-blue-400 flex items-center">

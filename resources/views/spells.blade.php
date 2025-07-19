@@ -12,46 +12,69 @@ $darkSpells = [
     'Skeleton Spell', 'Bat Spell', 'Overgrowth Spell', 'Ice Block Spell'
 ];
 
-// Group spells
+// Grouped spell lists to display all by name
 $groupedSpells = [
-    'Elixir Spells' => [],
-    'Dark Elixir Spells' => [],
+    'Elixir Spells' => $elixirSpells,
+    'Dark Elixir Spells' => $darkSpells,
 ];
 
-foreach ($player['spells'] as $spell) {
-    if (in_array($spell['name'], $elixirSpells)) {
-        $groupedSpells['Elixir Spells'][] = $spell;
-    } elseif (in_array($spell['name'], $darkSpells)) {
-        $groupedSpells['Dark Elixir Spells'][] = $spell;
-    }
-}
-
-// Folder paths
-$folderPaths = [
+// Folder mapping
+$categoryFolders = [
     'Elixir Spells' => 'TH/E_Spells',
     'Dark Elixir Spells' => 'TH/DE_Spells',
 ];
+
+// Collection from player data
+$playerSpells = collect($player['spells'] ?? []);
 @endphp
 
-@foreach ($groupedSpells as $group => $spells)
-    @if (count($spells) > 0)
-        <div class="mt-10">
-            <h2 class="text-2xl font-bold mb-4">{{ $group }}</h2>
-            <div class="grid grid-cols-5 gap-5">
-                @foreach ($spells as $spell)
-                    @php
-                        $imageName = str_replace([' ', '.', '(', ')'], ['_', '', '', ''], $spell['name']) . '_info.webp';
-                        $folder = $folderPaths[$group];
-                        $imagePath = asset("images/{$folder}/{$imageName}");
-                    @endphp
-                    <div class="text-center">
-                        <img class="w-20 h-20 object-contain mx-auto mb-2" src="{{ $imagePath }}" alt="{{ $spell['name'] }}">
-                        <h3 class="font-semibold">{{ $spell['name'] }}</h3>
-                        <p>Level: {{ $spell['level'] }}</p>
+<div class="w-full bg-[#0f0f0f] text-white p-6 font-sans">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">Spells</h1>
+        <div class="space-y-10">
+            @foreach($groupedSpells as $category => $spellList)
+                <div class="bg-[#1e1e1e] rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4 text-blue-400">{{ $category }}</h2>
+                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                        @foreach($spellList as $spellName)
+                            @php
+                                $data = $playerSpells->firstWhere('name', $spellName);
+                                $hasSpell = $data !== null;
+                                $level = $data['level'] ?? 0;
+
+                                // Format name to image file
+                                $imageName = str_replace([' ', '.', '(', ')'], ['_', '', '', ''], $spellName) . '_info.webp';
+                                $folder = $categoryFolders[$category] ?? 'TH/Other';
+                                $imagePath = asset("images/{$folder}/{$imageName}");
+                            @endphp
+
+                            <div class="relative group flex flex-col items-center">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 p-1 shadow-lg flex items-center justify-center 
+                                    @if($hasSpell) 
+                                        border-2 border-blue-500 group-hover:border-blue-400 group-hover:shadow-blue-500/30
+                                        transition-all duration-300 group-hover:scale-110
+                                    @else
+                                        border border-gray-700 opacity-60
+                                    @endif">
+                                    <img src="{{ $imagePath }}" 
+                                         alt="{{ $spellName }}" 
+                                         class="w-full h-full rounded-full object-contain 
+                                                @if(!$hasSpell) grayscale opacity-50 @endif">
+                                </div>
+                                <div class="absolute -top-1 -right-1 
+                                            @if($hasSpell) bg-blue-500 @else bg-gray-600 @endif
+                                            text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                                    {{ $hasSpell ? $level : 0 }}
+                                </div>
+                                <span class="mt-2 text-sm font-medium text-center @if(!$hasSpell) text-gray-500 @endif">
+                                    {{ $spellName }}
+                                </span>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endforeach
         </div>
-    @endif
-@endforeach
+    </div>
+</div>
 @endisset

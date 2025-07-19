@@ -17,7 +17,8 @@
                 <input 
                     type="text" 
                     name="tag"
-                    placeholder="Enter player tag (#88JY8P2) or clan tag/name" 
+                    placeholder="Enter player tag (#88JY8P2) or clan tag/name"
+                    autocomplete="off"
                     class="flex-1 bg-transparent px-4 sm:px-6 py-3 text-white placeholder-gray-400 focus:outline-none w-full"
                     required
                 >
