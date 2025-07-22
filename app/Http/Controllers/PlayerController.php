@@ -13,24 +13,29 @@ class PlayerController extends Controller
         $base = 'https://api.clashofclans.com/v1/locations/global/rankings';
         $token = env('COC_API_TOKEN');
 
-        $homeVillageTop = Cache::rememberForever('homeVillageTop', function () use ($token, $base) {
-            return Http::withToken($token)->get("{$base}/players", ['limit' => 5])->json('items') ?? [];
+        $homeVillageTop = Cache::remember('homeVillageTop', 3600, function () use ($token, $base) {
+            $res = Http::withToken($token)->get("{$base}/players", ['limit' => 5]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
-        $builderBaseTop = Cache::rememberForever('builderBaseTop', function () use ($token, $base) {
-            return Http::withToken($token)->get("{$base}/players-builder-base", ['limit' => 5])->json('items') ?? [];
+        $builderBaseTop = Cache::remember('builderBaseTop', 3600, function () use ($token, $base) {
+            $res = Http::withToken($token)->get("{$base}/players-builder-base", ['limit' => 5]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
-        $homeClanTop = Cache::rememberForever('homeClanTop', function () use ($token, $base) {
-            return Http::withToken($token)->get("{$base}/clans", ['limit' => 5])->json('items') ?? [];
+        $homeClanTop = Cache::remember('homeClanTop', 3600, function () use ($token, $base) {
+            $res = Http::withToken($token)->get("{$base}/clans", ['limit' => 5]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
-        $builderClanTop = Cache::rememberForever('builderClanTop', function () use ($token, $base) {
-            return Http::withToken($token)->get("{$base}/clans-builder-base", ['limit' => 5])->json('items') ?? [];
+        $builderClanTop = Cache::remember('builderClanTop', 3600, function () use ($token, $base) {
+            $res = Http::withToken($token)->get("{$base}/clans-builder-base", ['limit' => 5]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
-        $capitalClanTop = Cache::rememberForever('capitalClanTop', function () use ($token, $base) {
-            return Http::withToken($token)->get("{$base}/capitals", ['limit' => 5])->json('items') ?? [];
+        $capitalClanTop = Cache::remember('capitalClanTop', 3600, function () use ($token, $base) {
+            $res = Http::withToken($token)->get("{$base}/capitals", ['limit' => 5]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
         return view('index', compact('homeVillageTop', 'builderBaseTop', 'homeClanTop', 'builderClanTop', 'capitalClanTop'));
@@ -43,71 +48,81 @@ class PlayerController extends Controller
         if (str_starts_with($input, '#')) {
             $tag = urlencode($input);
 
-            $playerRes = Http::withToken(env('COC_API_TOKEN'))->get("https://api.clashofclans.com/v1/players/{$tag}");
-            if ($playerRes->successful()) {
+            // Check if player exists
+            $playerData = Cache::remember("player_search_{$tag}", 3600, function () use ($tag) {
+                $res = Http::withToken(env('COC_API_TOKEN'))->get("https://api.clashofclans.com/v1/players/{$tag}");
+                return $res->successful() ? $res->json() : null;
+            });
+
+            if ($playerData) {
                 return redirect()->route('player.show', ['tag' => ltrim($input, '#')]);
             }
 
-            $clanRes = Http::withToken(env('COC_API_TOKEN'))->get("https://api.clashofclans.com/v1/clans/{$tag}");
-            if ($clanRes->successful()) {
+            // Check if clan exists
+            $clanData = Cache::remember("clan_search_{$tag}", 3600, function () use ($tag) {
+                $res = Http::withToken(env('COC_API_TOKEN'))->get("https://api.clashofclans.com/v1/clans/{$tag}");
+                return $res->successful() ? $res->json() : null;
+            });
+
+            if ($clanData) {
                 return redirect()->route('clan.show', ['tag' => ltrim($input, '#')]);
             }
 
-            return view('info', ['error' => 'No player or clan found with this tag.']);
+            return view('player.index', ['error' => 'No player or clan found with this tag.']);
         }
 
         if (strlen($input) < 3) {
-            return view('clan_preview', ['error' => 'Search term must be at least 3 characters long.']);
+            return view('clan.clan_preview', ['error' => 'Search term must be at least 3 characters long.']);
         }
 
-        $res = Cache::rememberForever("clan_search_{$input}", function () use ($input) {
-            return Http::withToken(env('COC_API_TOKEN'))->get('https://api.clashofclans.com/v1/clans', [
+        $clans = Cache::remember("clan_name_search_{$input}", 3600, function () use ($input) {
+            $res = Http::withToken(env('COC_API_TOKEN'))->get('https://api.clashofclans.com/v1/clans', [
                 'name' => $input,
                 'limit' => 100
             ]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
-        if ($res->successful()) {
-            return view('clan_preview', ['clans' => $res->json('items') ?? []]);
-        }
-
-        return view('clan_preview', ['error' => 'No clans found.']);
+        return view('clan.clan_preview', ['clans' => $clans]);
     }
 
     public function show($tag)
     {
         $tag = '#' . ltrim($tag, '#');
 
-        $res = Cache::rememberForever("player_info_{$tag}", function () use ($tag) {
-            return Http::withToken(env('COC_API_TOKEN'))->get("https://api.clashofclans.com/v1/players/" . urlencode($tag));
+        $player = Cache::remember("player_info_{$tag}", 3600, function () use ($tag) {
+            $res = Http::withToken(env('COC_API_TOKEN'))->get("https://api.clashofclans.com/v1/players/" . urlencode($tag));
+            return $res->successful() ? $res->json() : null;
         });
 
-        if ($res->successful()) {
-            return view('info', ['player' => $res->json()]);
+        if (!$player) {
+            return view('player.index', ['error' => 'Player not found.']);
         }
 
-        return view('info', ['error' => 'Player not found.']);
+        // Make sure the player data is properly formatted
+        if (is_array($player)) {
+            return view('player.index', ['player' => $player]);
+        }
+
+        return view('player.index', ['error' => 'Invalid player data.']);
     }
 
     public function searchClans(Request $request)
     {
         $name = $request->query('name');
         if (!$name || strlen($name) < 3) {
-            return view('clan_preview', ['error' => 'Clan name must be at least 3 characters long.']);
+            return view('clan.clan_preview', ['error' => 'Clan name must be at least 3 characters long.']);
         }
 
-        $res = Cache::rememberForever("clan_search_name_{$name}", function () use ($name) {
-            return Http::withToken(env('COC_API_TOKEN'))->get('https://api.clashofclans.com/v1/clans', [
+        $clans = Cache::remember("clan_search_name_{$name}", 3600, function () use ($name) {
+            $res = Http::withToken(env('COC_API_TOKEN'))->get('https://api.clashofclans.com/v1/clans', [
                 'name' => $name,
                 'limit' => 100
             ]);
+            return $res->successful() ? $res->json('items') ?? [] : [];
         });
 
-        if ($res->successful()) {
-            return view('clan_preview', ['clans' => $res->json('items') ?? []]);
-        }
-
-        return view('clan_preview', ['error' => 'No clans found.']);
+        return view('clan.clan_preview', ['clans' => $clans]);
     }
 
     public function showClan($tag)
@@ -115,30 +130,30 @@ class PlayerController extends Controller
         $tag = '#' . ltrim($tag, '#');
         $token = env('COC_API_TOKEN');
 
-        $clan = Cache::rememberForever("clan_info_{$tag}", function () use ($tag, $token) {
+        $clan = Cache::remember("clan_info_{$tag}", 3600, function () use ($tag, $token) {
             $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag));
             return $res->successful() ? $res->json() : null;
         });
 
         if (!$clan) {
-            return view('clan', ['error' => 'Clan not found or invalid tag.']);
+            return view('clan.clan', ['error' => 'Clan not found or invalid tag.']);
         }
 
-        $clan['currentWar'] = Cache::rememberForever("clan_war_{$tag}", function () use ($tag, $token) {
+        $clan['currentWar'] = Cache::remember("clan_war_{$tag}", 3600, function () use ($tag, $token) {
             $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/currentwar");
             return $res->successful() ? $res->json() : null;
         });
 
-        $clan['cwl'] = Cache::rememberForever("clan_cwl_{$tag}", function () use ($tag, $token) {
+        $clan['cwl'] = Cache::remember("clan_cwl_{$tag}", 3600, function () use ($tag, $token) {
             $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/currentwar/leaguegroup");
             return $res->successful() ? $res->json() : null;
         });
 
-        $clan['warLog'] = Cache::rememberForever("clan_warlog_{$tag}", function () use ($tag, $token) {
+        $clan['warLog'] = Cache::remember("clan_warlog_{$tag}", 3600, function () use ($tag, $token) {
             $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/warlog");
             return $res->successful() ? $res->json() : null;
         });
 
-        return view('clan', ['clan' => $clan]);
+        return view('clan.clan', ['clan' => $clan]);
     }
 }

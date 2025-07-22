@@ -53,8 +53,7 @@ $playerSpells = collect($player['spells'] ?? []);
                                     @if($hasSpell) 
                                         border-2 border-blue-500 group-hover:border-blue-400 group-hover:shadow-blue-500/30
                                         transition-all duration-300 group-hover:scale-110
-                                    @else
-                                        border border-gray-700 opacity-60
+                                    @else opacity-60
                                     @endif">
                                     <img src="{{ $imagePath }}" 
                                          alt="{{ $spellName }}" 
@@ -62,7 +61,7 @@ $playerSpells = collect($player['spells'] ?? []);
                                                 @if(!$hasSpell) grayscale opacity-50 @endif">
                                 </div>
                                 <div class="absolute -top-1 -right-1 
-                                            @if($hasSpell) bg-blue-500 @else bg-gray-600 @endif
+                                            @if($hasSpell) bg-blue-500 @else @endif
                                             text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
                                     {{ $hasSpell ? $level : 0 }}
                                 </div>

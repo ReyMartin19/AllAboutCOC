@@ -72,11 +72,11 @@
 
         <!-- Tab Content -->
         <div id="members-tab" class="tab-content">
-            @include('clan.partials.clan_members', ['clan' => $clan])
+            @include('clan.partials.members', ['clan' => $clan])
         </div>
         
         <div id="clan-war-tab" class="tab-content hidden">
-            @include('clan.partials.clan_war', ['clan' => $clan])
+            @include('clan.partials.war', ['clan' => $clan])
         </div>
         
         <div id="cwl-tab" class="tab-content hidden">
@@ -84,7 +84,7 @@
         </div>
         
         <div id="history-tab" class="tab-content hidden">
-            @include('clan.partials.clan_history', ['clan' => $clan])
+            @include('clan.partials.history', ['clan' => $clan])
         </div>
     </div>
 </div>

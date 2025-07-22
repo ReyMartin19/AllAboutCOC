@@ -17,7 +17,7 @@
 <body class="bg-black text-white font-sans">
 
     <header>
-        @include('nav')
+        @include('layouts.nav')
     </header>
 
     <main class="pt-16">
@@ -25,7 +25,7 @@
     </main>
     
     <footer class="bg-gray-950 border-t border-gray-800 py-12">
-        @include('footer')
+        @include('layouts.footer')
     </footer>
 </body>
 </html>

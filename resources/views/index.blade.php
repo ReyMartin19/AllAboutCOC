@@ -32,7 +32,7 @@
             </p>
         </form>
     </div>
-    @include('rankings')
+    @include('rankings.rankings')
 </div>
 
 {{-- Toggle button styling & logic --}}
