@@ -41,6 +41,48 @@ class PlayerController extends Controller
         return view('index', compact('homeVillageTop', 'builderBaseTop', 'homeClanTop', 'builderClanTop', 'capitalClanTop'));
     }
 
+    public function rankings()
+{
+    $base = 'https://api.clashofclans.com/v1/locations/global/rankings';
+    $token = env('COC_API_TOKEN');
+
+    $homeVillageTop = Cache::remember('homeVillageTop_50', 3600, function () use ($token, $base) {
+        $res = Http::withToken($token)->get("{$base}/players", ['limit' => 50]);
+        return $res->successful() ? $res->json('items') ?? [] : [];
+    });
+
+    $builderBaseTop = Cache::remember('builderBaseTop_50', 3600, function () use ($token, $base) {
+        $res = Http::withToken($token)->get("{$base}/players-builder-base", ['limit' => 50]);
+        return $res->successful() ? $res->json('items') ?? [] : [];
+    });
+
+    $homeClanTop = Cache::remember('homeClanTop_50', 3600, function () use ($token, $base) {
+        $res = Http::withToken($token)->get("{$base}/clans", ['limit' => 50]);
+        return $res->successful() ? $res->json('items') ?? [] : [];
+    });
+
+    $builderClanTop = Cache::remember('builderClanTop_50', 3600, function () use ($token, $base) {
+        $res = Http::withToken($token)->get("{$base}/clans-builder-base", ['limit' => 50]);
+        return $res->successful() ? $res->json('items') ?? [] : [];
+    });
+
+    $capitalClanTop = Cache::remember('capitalClanTop_50', 3600, function () use ($token, $base) {
+        $res = Http::withToken($token)->get("{$base}/capitals", ['limit' => 50]);
+        return $res->successful() ? $res->json('items') ?? [] : [];
+    });
+
+    return view('rankings.more_rankings', [
+        'homeVillageTop' => $homeVillageTop,
+        'builderBaseTop' => $builderBaseTop,
+        'homeClanTop' => $homeClanTop,
+        'builderClanTop' => $builderClanTop,
+        'capitalClanTop' => $capitalClanTop,
+        'isFullPage' => true, // used in the blade logic
+        'limit' => 50
+    ]);
+}
+
+
     public function search(Request $request)
     {
         $input = trim($request->input('tag'));

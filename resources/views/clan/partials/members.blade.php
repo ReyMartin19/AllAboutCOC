@@ -1,8 +1,8 @@
-<div class="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-8">
+<div class=" border border-gray-700 rounded-lg p-6 mb-8">
     <div class="mb-6 flex justify-between items-center">
         <h2 class="text-xl font-bold">Members</h2>
         <div class="flex space-x-2">
-            <select id="sortField" class="bg-gray-700 text-white rounded px-3 py-1">
+            <select id="sortField" class="bg-gray-700 border border-gray-700 bg-gray-800/50 hover:bg-gray-800/70 transition-colors duration-200 text-white rounded px-3 py-1">
                 <option value="">Default Order</option>
                 <option value="name">Name</option>
                 <option value="expLevel">XP</option>

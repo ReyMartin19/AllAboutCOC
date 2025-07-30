@@ -18,4 +18,4 @@ Route::get('/clan', [PlayerController::class, 'searchClans'])->name('clan.search
 Route::get('/clan/{tag}', [PlayerController::class, 'showClan'])->name('clan.show');
 
 //Ranking
-Route::get('/ranking', [PlayerController::class, 'ranking'])->name('ranking');
+Route::get('/rankings', [PlayerController::class, 'rankings'])->name('rankings');

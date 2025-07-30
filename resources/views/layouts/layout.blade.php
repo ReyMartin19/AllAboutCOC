@@ -12,6 +12,8 @@
         @import url(https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&text=shield,search,trophy,construction,group,engineering,apartment);
         @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css);
     </style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- In your layout.blade.php inside <head> -->
 </head>
 <body class="bg-black text-white font-sans">
