@@ -168,34 +168,188 @@ class PlayerController extends Controller
     }
 
     public function showClan($tag)
-    {
-        $tag = '#' . ltrim($tag, '#');
-        $token = env('COC_API_TOKEN');
+{
+    $tag = '#' . ltrim($tag, '#');
+    $token = env('COC_API_TOKEN');
 
-        $clan = Cache::remember("clan_info_{$tag}", 3600, function () use ($tag, $token) {
-            $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag));
-            return $res->successful() ? $res->json() : null;
-        });
+    // Fetch clan data
+    $clan = Cache::remember("clan_info_{$tag}", 3600, function () use ($tag, $token) {
+        $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag));
+        if ($res->failed()) {
+            \Log::error("Clan API request failed for {$tag}: {$res->status()}");
+            return null;
+        }
+        return $res->successful() ? $res->json() : null;
+    });
 
-        if (!$clan) {
-            return view('clan.clan', ['error' => 'Clan not found or invalid tag.']);
+    if (!$clan) {
+        return view('clan.clan', ['error' => 'Clan not found or invalid tag.']);
+    }
+
+    // Fetch current war
+    $clan['currentWar'] = Cache::remember("clan_war_{$tag}", 600, function () use ($tag, $token) {
+        $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/currentwar");
+        if ($res->failed()) {
+            \Log::error("Current war API request failed for {$tag}: {$res->status()}");
+            return null;
+        }
+        return $res->successful() ? $res->json() : null;
+    });
+
+    $clan['cwlGroup'] = Cache::remember("clan_cwl_{$tag}", 600, function () use ($tag, $token) {
+        $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/currentwar/leaguegroup");
+        if ($res->failed()) {   
+            \Log::error("CWL API failed for {$tag}: Status {$res->status()}, Body: {$res->body()}");
+            return null;
+        }
+        $data = $res->successful() ? $res->json() : null;
+        \Log::debug("CWL API response for {$tag}: ", [$data]);
+        return $data;
+    });
+
+    // Initialize cwlWars array
+    $clan['cwlWars'] = [];
+
+    // Process CWL data if available
+    if (isset($clan['cwlGroup']['rounds']) && is_array($clan['cwlGroup']['rounds'])) {
+        // Process rounds data
+        $rawRounds = $clan['cwlGroup']['rounds'];
+        
+        // Flatten in case rounds is [[...]] instead of [...]
+        if (count($rawRounds) === 1 && is_array($rawRounds[0])) {
+            $rawRounds = $rawRounds[0];
         }
 
-        $clan['currentWar'] = Cache::remember("clan_war_{$tag}", 3600, function () use ($tag, $token) {
-            $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/currentwar");
-            return $res->successful() ? $res->json() : null;
+        // Filter out empty rounds
+        $filteredRounds = array_filter($rawRounds, function ($round) {
+            if (!isset($round['warTags']) || !is_array($round['warTags'])) return false;
+            
+            foreach ($round['warTags'] as $tag) {
+                if ($tag !== '#0') return true;
+            }
+            return false;
         });
 
-        $clan['cwl'] = Cache::remember("clan_cwl_{$tag}", 3600, function () use ($tag, $token) {
-            $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/currentwar/leaguegroup");
-            return $res->successful() ? $res->json() : null;
-        });
+        // Fetch war details for each valid war tag
+        foreach ($filteredRounds as $round) {
+            if (isset($round['warTags'])) {
+                foreach ($round['warTags'] as $warTag) {
+                    if ($warTag !== '#0') {
+                        $clan['cwlWars'][$warTag] = Cache::remember("cwl_war_{$warTag}", 600, function () use ($warTag, $token) {
+                            $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clanwarleagues/wars/" . urlencode($warTag));
+                            if ($res->failed()) {
+                                \Log::error("CWL war API request failed for {$warTag}: {$res->status()}");
+                                return null;
+                            }
+                            return $res->successful() ? $res->json() : null;
+                        });
+                    }
+                }
+            }
+        }
 
-        $clan['warLog'] = Cache::remember("clan_warlog_{$tag}", 3600, function () use ($tag, $token) {
-            $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/warlog");
-            return $res->successful() ? $res->json() : null;
-        });
-
-        return view('clan.clan', ['clan' => $clan]);
+        // Structure the CWL data
+        $clan['cwl'] = [
+            'rounds' => array_values($filteredRounds), // reindex array after filtering
+            'wars' => $clan['cwlWars']
+        ];
+    } else {
+        $clan['cwl'] = [
+            'rounds' => [],
+            'wars' => []
+        ];
     }
+
+    \Log::debug("Final CWL data structure for {$tag}: ", [$clan['cwl']]);
+
+    // Fetch war log
+    $clan['warLog'] = Cache::remember("clan_warlog_{$tag}", 3600, function () use ($tag, $token) {
+        $res = Http::withToken($token)->get("https://api.clashofclans.com/v1/clans/" . urlencode($tag) . "/warlog");
+        if ($res->failed()) {
+            \Log::error("War log API request failed for {$tag}: {$res->status()}");
+            return null;
+        }
+        return $res->successful() ? $res->json() : null;
+    });
+
+    // Preprocess currentWar data
+    if (isset($clan['currentWar']) && is_array($clan['currentWar']) && !empty($clan['currentWar']) && isset($clan['currentWar']['state']) && $clan['currentWar']['state'] !== 'notInWar') {
+        $war = $clan['currentWar'];
+
+        // Initialize defaults
+        $war = array_merge([
+            'state' => 'notInWar',
+            'teamSize' => 0,
+            'attacksPerMember' => 0,
+            'clan' => [
+                'members' => [],
+                'stars' => 0,
+                'destructionPercentage' => 0,
+                'badgeUrls' => ['small' => asset('images/default_badge.png')],
+                'name' => 'Unknown'
+            ],
+            'opponent' => [
+                'members' => [],
+                'stars' => 0,
+                'destructionPercentage' => 0,
+                'badgeUrls' => ['small' => asset('images/default_badge.png')],
+                'name' => 'Unknown'
+            ],
+            'preparationStartTime' => null,
+            'startTime' => null,
+            'endTime' => null
+        ], $war);
+
+        // Parse timestamps
+        $war['prepStart'] = isset($war['preparationStartTime'])
+            ? \Carbon\Carbon::createFromFormat('Ymd\THis.v\Z', $war['preparationStartTime'])
+            : null;
+        $war['startTime'] = isset($war['startTime'])
+            ? \Carbon\Carbon::createFromFormat('Ymd\THis.v\Z', $war['startTime'])
+            : null;
+        $war['endTime'] = isset($war['endTime'])
+            ? \Carbon\Carbon::createFromFormat('Ymd\THis.v\Z', $war['endTime'])
+            : null;
+
+        // Sort clan members by map position
+        if (isset($war['clan']['members']) && is_array($war['clan']['members']) && !empty($war['clan']['members'])) {
+            usort($war['clan']['members'], function ($a, $b) {
+                return ($a['mapPosition'] ?? 0) <=> ($b['mapPosition'] ?? 0);
+            });
+        } else {
+            $war['clan']['members'] = [];
+        }
+
+        // Sort opponent members by map position
+        if (isset($war['opponent']['members']) && is_array($war['opponent']['members']) && !empty($war['opponent']['members'])) {
+            usort($war['opponent']['members'], function ($a, $b) {
+                return ($a['mapPosition'] ?? 0) <=> ($b['mapPosition'] ?? 0);
+            });
+        } else {
+            $war['opponent']['members'] = [];
+        }
+
+        // Create defender names map
+        $defenderNames = [];
+        foreach ([$war['clan']['members'], $war['opponent']['members']] as $members) {
+            if (is_array($members)) {
+                foreach ($members as $member) {
+                    if (isset($member['tag'], $member['name']) && is_string($member['tag']) && is_string($member['name'])) {
+                        $defenderNames[$member['tag']] = $member['name'];
+                    }
+                }
+            }
+        }
+
+        // Update war data
+        $clan['currentWar'] = $war;
+        $clan['defenderNames'] = $defenderNames;
+    } else {
+        \Log::debug("No valid war data for clan {$tag}", [$clan['currentWar'] ?? 'not set']);
+        $clan['currentWar'] = [];
+        $clan['defenderNames'] = [];
+    }
+
+    return view('clan.clan', ['clan' => $clan]);
+}
 }

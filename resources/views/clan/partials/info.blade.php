@@ -1,12 +1,11 @@
-<div class="bg-gray-900 rounded-lg overflow-hidden shadow-xl p-4 md:p-6 space-y-6">
-    {{-- Description Section (if available) --}}
+<div class="rounded-lg overflow-hidden shadow-xl p-4 md:p-6 space-y-6">
     @if (!empty($clan['description']))
     <div class="bg-gray-800 p-6 rounded-xl shadow-sm">
         <!-- Basic Clan Info -->
         <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <!-- Clan Badge -->
             <div class="relative group">
-                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gray-800 border-2 border-blue-500 flex items-center justify-center overflow-hidden transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-blue-500/20">
+                <div class="w-24 h-24 md:w-32 md:h-32 p-4 rounded-full bg-gray-800 border-2 border-blue-500 flex items-center justify-center overflow-hidden transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-blue-500/20">
                     <img
                         src="{{ $clan['badgeUrls']['large'] }}"
                         alt="Clan Badge"

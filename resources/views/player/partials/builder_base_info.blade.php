@@ -1,34 +1,33 @@
-<h3 class="text-xl font-bold mb-4 text-primary-400 flex items-center gap-2">
-                    <span class="material-symbols-outlined"></span>
-                    Builder Base
-                </h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-yellow-400">home</span>
-                            Builder Hall Level
-                        </span>
-                        <span class="font-bold">{{ $player['builderHallLevel'] ?? '0' }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-blue-400">trophy</span>
-                            Builder Base Trophies
-                        </span>
-                        <span class="font-bold">{{ $player['builderBaseTrophies'] ?? '0' }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-green-400"></span>
-                            Best Builder Base Trophies
-                        </span>
-                        <span class="font-bold">{{ $player['bestBuilderBaseTrophies'] ?? '0' }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-purple-400">castle</span>
-                            Clan Capital Contributions
-                        </span>
-                        <span class="font-bold">{{ $player['clanCapitalContributions'] ?? '0' }}</span>
-                    </div>
-                </div>
+<div class="space-y-4">
+    <div class="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 transition">
+        <div class="flex items-center">
+            <span class="material-symbols-outlined text-yellow-400 mr-3">home_work</span>
+            <span>Builder Hall</span>
+        </div>
+        <span class="font-bold">{{ $player['builderHallLevel'] ?? '0' }}</span>
+    </div>
+
+    <div class="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 transition">
+        <div class="flex items-center">
+            <span class="material-symbols-outlined text-purple-400 mr-3">emoji_events</span>
+            <span>Trophies</span>
+        </div>
+        <span class="font-bold">{{ $player['builderBaseTrophies'] ?? '0' }}</span>
+    </div>
+
+    <div class="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 transition">
+        <div class="flex items-center">
+            <span class="material-symbols-outlined text-blue-400 mr-3">stars</span>
+            <span>Best Trophies</span>
+        </div>
+        <span class="font-bold">{{ $player['bestBuilderBaseTrophies'] ?? '0' }}</span>
+    </div>
+
+    <div class="flex justify-between items-center p-3 bg-gray-900/50 rounded-lg hover:bg-gray-900 transition">
+        <div class="flex items-center">
+            <span class="material-symbols-outlined text-yellow-500 mr-3">castle</span>
+            <span>Capital Contributions</span>
+        </div>
+        <span class="font-bold">{{ $player['clanCapitalContributions'] ?? '0' }}</span>
+    </div>
+</div>

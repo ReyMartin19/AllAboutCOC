@@ -20,7 +20,7 @@ class TroopService
     public const SUPER_TROOPS = [
         'Super Barbarian', 'Super Archer', 'Super Giant', 'Sneaky Goblin', 'Super Wall Breaker',
         'Rocket Balloon', 'Super Wizard', 'Super Dragon', 'Inferno Dragon', 'Super Miner',
-        'Super Yeti', 'Super Minion', 'Super Hog Rider', 'Super Rider', 'Super Valkyrie',
+        'Super Yeti', 'Super Minion', 'Super Hog Rider', 'Super Valkyrie',
         'Super Witch', 'Ice Hound', 'Super Bowler'
     ];
 
@@ -67,8 +67,15 @@ class TroopService
 
     public function processTroopData(array $playerData): array
     {
-        $playerTroops = collect($playerData['troops'] ?? []);
-        $playerPets = collect($playerData['heroPets'] ?? []);
+        $allTroops = collect($playerData['troops'] ?? []);
+        
+        // Extract hero pets from troops if heroPets array is missing
+        $playerPets = collect($playerData['heroPets'] ?? [])
+            ->when(empty($playerData['heroPets']), function ($collection) use ($allTroops) {
+                return $allTroops->filter(fn($troop) => in_array($troop['name'], self::HERO_PETS));
+            });
+
+        $playerTroops = $allTroops->reject(fn($troop) => in_array($troop['name'], self::HERO_PETS));
 
         return [
             'groupedTroops' => $this->getGroupedTroops(),

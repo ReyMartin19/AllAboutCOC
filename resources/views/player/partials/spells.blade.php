@@ -28,14 +28,13 @@ $categoryFolders = [
 $playerSpells = collect($player['spells'] ?? []);
 @endphp
 
-<div class="w-full bg-[#0f0f0f] text-white p-6 font-sans">
-    <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8 text-center">Spells</h1>
+<div class="w-full text-white font-sans">
+    <div class="w-full">
         <div class="space-y-10">
             @foreach($groupedSpells as $category => $spellList)
-                <div class="bg-[#1e1e1e] rounded-lg p-6">
+                <div class="rounded-lg">
                     <h2 class="text-xl font-semibold mb-4 text-blue-400">{{ $category }}</h2>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                    <div class="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl p-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                         @foreach($spellList as $spellName)
                             @php
                                 $data = $playerSpells->firstWhere('name', $spellName);

@@ -3,26 +3,28 @@
     $troopData = get_troop_data($player);
 @endphp
 
-<div class="w-full bg-[#0f0f0f] text-white p-6 font-sans">
-    <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8 text-center">Troops</h1>
+<div class="w-full text-white font-sans">
+    <div class="w-full">
         <div class="space-y-10">
             @foreach($troopData['groupedTroops'] as $category => $troopList)
-                <div class="bg-[#1e1e1e] rounded-lg p-6">
+                <div class=" ">
                     <h2 class="text-xl font-semibold mb-4 text-blue-400">{{ $category }}</h2>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-4 w-full">
+                    <div class="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl p-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-4 w-full">
                         @foreach($troopList as $troopName)
-                            @php
-                                $isPet = $category === 'Hero Pets';
-                                $collection = $isPet ? $troopData['playerPets'] : $troopData['playerTroops'];
-                                $data = $collection->firstWhere('name', $troopName);
-                                $hasTroop = $data !== null;
-                                $level = $data['level'] ?? 0;
-                                $troopImage = format_troop_image_name($troopName);
-                                $folder = $troopData['categoryFolders'][$category] ?? 'TH/Other';
-                                $imagePath = asset("images/{$folder}/{$troopImage}");
-                            @endphp
+                        @php
+                            $isPet = $category === 'Hero Pets';
+                            $collection = $isPet ? $troopData['playerPets'] : $troopData['playerTroops'];
 
+                            // Safe comparison: match even with formatting differences
+                            $data = $collection->first(fn ($item) => strtolower(trim($item['name'])) === strtolower(trim($troopName)));
+
+                            $hasTroop = $data !== null;
+                            $level = $data['level'] ?? 0;
+                            $troopImage = format_troop_image_name($troopName);
+                            $folder = $troopData['categoryFolders'][$category] ?? 'TH/Other';
+                            $imagePath = asset("images/{$folder}/{$troopImage}");
+                        @endphp
+                        
                             <div class="relative group flex flex-col items-center">
                                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 p-1 shadow-lg flex items-center justify-center 
                                     @if($hasTroop) 

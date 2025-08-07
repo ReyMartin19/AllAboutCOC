@@ -11,7 +11,7 @@
         </p>
         
         {{-- Search form --}}
-        <form class="max-w-2xl mx-auto" action="{{ route('search') }}" method="POST">
+        <form id="searchForm" class="max-w-2xl mx-auto" action="{{ route('search') }}" method="POST">
             @csrf
             <div class="flex flex-col sm:flex-row items-center bg-gray-900/50 backdrop-blur-sm rounded-full border border-blue-500/30 p-2 hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
                 <input 
@@ -32,41 +32,55 @@
             </p>
         </form>
     </div>
+
+    {{-- Loader Overlay --}}
+    <div id="loaderOverlay" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
+        <span class="loader"></span>
+    </div>
+
+    {{-- Rankings section --}}
     @include('rankings.rankings')
 </div>
 
-{{-- Toggle button styling & logic --}}
+{{-- Scripts --}}
 <script>
-    const searchTypeInput = document.getElementById('searchType');
-    const searchInput = document.getElementById('searchInput');
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('searchForm');
+        const loader = document.getElementById('loaderOverlay');
 
-    const buttons = {
-        player: document.getElementById('playerBtn'),
-        clan: document.getElementById('clanBtn'),
-        cwl: document.getElementById('cwlBtn')
-    };
+        form.addEventListener('submit', () => {
+            loader.classList.remove('hidden');
+        });
 
-    Object.entries(buttons).forEach(([type, btn]) => {
-        btn.addEventListener('click', () => {
-            // Update selected search type
-            searchTypeInput.value = type;
+        const searchTypeInput = document.getElementById('searchType');
+        const searchInput = document.getElementById('searchInput');
 
-            // Update input placeholder based on type
-            if (type === 'player') {
-                searchInput.placeholder = 'Player Tag (88JY8P2)';
-            } else if (type === 'clan') {
-                searchInput.placeholder = 'Clan Tag / Name';
-            } else if (type === 'cwl') {
-                searchInput.placeholder = 'Clan Tag (CWL Match)';
-            }
+        const buttons = {
+            player: document.getElementById('playerBtn'),
+            clan: document.getElementById('clanBtn'),
+            cwl: document.getElementById('cwlBtn')
+        };
 
-            // Update styles
-            Object.values(buttons).forEach(b => b.classList.remove('active-tab'));
-            btn.classList.add('active-tab');
+        Object.entries(buttons).forEach(([type, btn]) => {
+            btn.addEventListener('click', () => {
+                searchTypeInput.value = type;
+
+                if (type === 'player') {
+                    searchInput.placeholder = 'Player Tag (88JY8P2)';
+                } else if (type === 'clan') {
+                    searchInput.placeholder = 'Clan Tag / Name';
+                } else if (type === 'cwl') {
+                    searchInput.placeholder = 'Clan Tag (CWL Match)';
+                }
+
+                Object.values(buttons).forEach(b => b.classList.remove('active-tab'));
+                btn.classList.add('active-tab');
+            });
         });
     });
 </script>
 
+{{-- Styles --}}
 <style>
     .search-toggle {
         @apply hover:bg-gray-800/50 transition-all;
@@ -74,6 +88,62 @@
 
     .active-tab {
         @apply text-blue-400;
+    }
+
+    /* Loader Styles */
+    .loader {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 6rem;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .loader:before,
+    .loader:after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        animation: pulsOut 1.8s ease-in-out infinite;
+        filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
+    }
+
+    .loader:before {
+        width: 100%;
+        padding-bottom: 100%;
+        box-shadow: inset 0 0 0 1rem #fff;
+        animation-name: pulsIn;
+    }
+
+    .loader:after {
+        width: calc(100% - 2rem);
+        padding-bottom: calc(100% - 2rem);
+        box-shadow: 0 0 0 0 #fff;
+    }
+
+    @keyframes pulsIn {
+        0% {
+            box-shadow: inset 0 0 0 1rem #fff;
+            opacity: 1;
+        }
+        50%, 100% {
+            box-shadow: inset 0 0 0 0 #fff;
+            opacity: 0;
+        }
+    }
+
+    @keyframes pulsOut {
+        0%, 50% {
+            box-shadow: 0 0 0 0 #fff;
+            opacity: 0;
+        }
+        100% {
+            box-shadow: 0 0 0 1rem #fff;
+            opacity: 1;
+        }
     }
 </style>
 @endsection
