@@ -7,13 +7,13 @@
                     $awayPlayer = $war['opponent']['members'][$index] ?? [];
                 @endphp
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-purple-500/30 transition-all duration-300">
-                    @include('clan.partials.war-member', [
+                    @include('clan.partials.war-tab.war-member', [
                         'player' => $homePlayer,
                         'opponentPlayer' => $awayPlayer,
                         'defenderNames' => $defenderNames,
                         'isHome' => true
                     ])
-                    @include('clan.partials.war-member', [
+                    @include('clan.partials.war-tab.war-member', [
                         'player' => $awayPlayer,
                         'opponentPlayer' => $homePlayer,
                         'defenderNames' => $defenderNames,

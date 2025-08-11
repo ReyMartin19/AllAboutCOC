@@ -119,19 +119,11 @@
 
         <!-- Troops Section -->
         <div class="rounded-xl mb-8">
-            <h1 class="text-2xl font-bold mb-4 text-primary-400 flex items-center gap-2 border-b border-1 my-2 p-3 border-amber-300">
-                <span class="material-symbols-outlined">shield</span>
-                Troops
-            </h1>
             @include('player.partials.troops')
         </div>
 
         <!-- Spells Section -->
         <div class="rounded-xl mb-8">
-            <h1 class="text-2xl font-bold mb-4 text-primary-400 flex items-center gap-2 border-b border-1 my-2 p-3 border-amber-300">
-                <span class="material-symbols-outlined">air_freshener</span>
-                Spells
-            </h1>
             @include('player.partials.spells')
         </div>
 
@@ -142,13 +134,6 @@
             </div>
         @endisset
     @endisset
-
-    <div class="text-center mt-10">
-        <a href="{{ route('search') }}" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors flex items-center gap-2 mx-auto w-fit">
-            <span class="material-symbols-outlined">search</span>
-            Search Another Player
-        </a>
-    </div>
-
+    
 </div>
 @endsection

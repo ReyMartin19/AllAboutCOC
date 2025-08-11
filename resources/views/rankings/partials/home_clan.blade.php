@@ -6,35 +6,39 @@
 
 @if($isFullPage)
 
-    <div class="overflow-auto rounded-sm  p-6 mb-8">
-        <table class="min-w-full text-sm text-white">
-            <thead class="bg-blue-600 border-b border-gray-600">
-                <tr>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-300">Rank</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-300 text-center">Clan Name</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-300 text-center">Members</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-300 text-center">Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($clans as $clan)
-                    <tr class="border-b border-gray-700 hover:bg-gray-800/70 transition-colors duration-200">
-                    <td class="px-4 py-4 text-center">
-                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-black font-bold text-sm
-                                @if($clan['rank'] == 1) bg-red-500
-                                @elseif($clan['rank'] == 2) bg-orange-500
-                                @elseif($clan['rank'] == 3) bg-amber-500
-                                @else bg-yellow-500
-                                @endif">
-                                {{ $clan['rank'] }}
-                            </span>
-                        </td>                        <td class="px-4 py-4 text-center font-bold text-white"><a href="{{ route('clan.show', ['tag' => ltrim($clan['tag'], '#')]) }}" class="hover:underline">{{ $clan['name'] }}</a></td>
-                        <td class="px-4 py-4 text-center">{{ $clan['members'] }}/50</td>
-                        <td class="px-4 py-4 text-center text-yellow-400">{{ $clan['clanPoints'] }}</td>
+    <div class="relative overflow-hidden rounded-xl border border-gray-700/70 bg-gradient-to-br from-gray-900 to-gray-950 p-5 shadow-lg shadow-black/30 mb-8">
+        <div class="absolute -top-12 -right-12 h-36 w-36 rounded-full bg-purple-500/10 blur-3xl"></div>
+        <div class="overflow-auto rounded-lg ring-1 ring-white/10 bg-gray-900/30">
+            <table class="min-w-full text-sm text-gray-300">
+                <thead class="bg-gray-800/70 sticky top-0 backdrop-blur supports-backdrop:backdrop-blur-sm">
+                    <tr>
+                        <th class="px-4 py-3 text-left uppercase text-xs tracking-wider">Rank</th>
+                        <th class="px-4 py-3 text-left uppercase text-xs tracking-wider">Clan Name</th>
+                        <th class="px-4 py-3 text-center uppercase text-xs tracking-wider">Members</th>
+                        <th class="px-4 py-3 text-center uppercase text-xs tracking-wider">Points</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="divide-y divide-gray-800/80">
+                    @foreach($clans as $clan)
+                        <tr class="hover:bg-gray-800/40 transition">
+                            <td class="px-4 py-3 align-middle">
+                                @if(($clan['rank'] ?? 0) <= 3)
+                                    @php $colors = ['from-yellow-400 to-amber-500','from-gray-300 to-gray-400','from-orange-300 to-amber-400']; @endphp
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br {{ $colors[($clan['rank']-1)] ?? 'from-gray-400 to-gray-500' }} inline-flex items-center justify-center text-gray-900 font-extrabold">{{ $clan['rank'] }}</div>
+                                @else
+                                    <span class="text-gray-400 font-semibold">{{ $clan['rank'] }}</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap align-middle text-white font-semibold">
+                                <a href="{{ route('clan.show', ['tag' => ltrim($clan['tag'], '#')]) }}" class="hover:underline">{{ $clan['name'] }}</a>
+                            </td>
+                            <td class="px-4 py-3 text-center align-middle text-gray-200">{{ $clan['members'] }}/50</td>
+                            <td class="px-4 py-3 text-center align-middle font-bold text-yellow-400">{{ $clan['clanPoints'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 @else
     <div class="space-y-4">

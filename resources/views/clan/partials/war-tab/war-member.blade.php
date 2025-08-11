@@ -1,6 +1,11 @@
 <div>
+    <!-- Player Header -->
     <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
+            <!-- Player Map Position -->
+            <span class="bg-purple-500/20 text-purple-300 text-xs font-bold px-2 py-1 rounded-full">
+                #{{ $player['mapPosition'] ?? 'N/A' }}
+            </span>
             <span class="text-white font-medium">{{ $player['name'] ?? 'Unknown' }}</span>
             <span class="text-gray-400 text-xs">{{ $player['tag'] ?? '' }}</span>
         </div>
@@ -12,14 +17,17 @@
         <div class="flex justify-between items-center mb-2">
             <h4 class="text-white font-medium text-sm">Attacks</h4>
             <span class="text-xs {{ isset($player['attacks']) && count($player['attacks']) > 0 ? 'text-yellow-400' : 'text-green-400' }}">
-                {{ count($player['attacks'] ?? []) }}/{{ $isHome ? ($war['attacksPerMember'] ?? 0) : ($war['attacksPerMember'] ?? 0) }}
+                {{ count($player['attacks'] ?? []) }}/{{ $war['attacksPerMember'] ?? 0 }}
             </span>
         </div>
         @if(isset($player['attacks']) && count($player['attacks']) > 0)
             <div class="space-y-2">
                 @foreach($player['attacks'] as $attack)
                     <div class="flex items-center justify-between text-xs bg-gray-700/50 p-2 rounded">
-                        <span class="text-gray-300 truncate">vs {{ $defenderNames[$attack['defenderTag'] ?? ''] ?? ($attack['defenderTag'] ?? 'Unknown') }}</span>
+                        <span class="text-gray-300 truncate">
+                            vs <span class="text-purple-300 font-bold">#{{ $opponentPlayer['mapPosition'] ?? '?' }}</span>
+                            {{ $defenderNames[$attack['defenderTag'] ?? ''] ?? ($attack['defenderTag'] ?? 'Unknown') }}
+                        </span>
                         <div class="flex items-center">
                             @for($i = 0; $i < ($attack['stars'] ?? 0); $i++)
                                 <span class="material-symbols-outlined text-yellow-400 text-xs">star</span>
@@ -49,10 +57,16 @@
             <div class="text-xs bg-gray-700/50 p-2 rounded">
                 <div class="text-gray-300">Best attack:</div>
                 <div class="flex items-center justify-between mt-1">
-                    <span class="text-white">{{ $defenderNames[$player['bestOpponentAttack']['attackerTag'] ?? ''] ?? ($player['bestOpponentAttack']['attackerTag'] ?? 'Unknown') }}</span>
+                    <span class="text-white">
+                        from <span class="text-purple-300 font-bold">#{{ $opponentPlayer['mapPosition'] ?? '?' }}</span>
+                        {{ $defenderNames[$player['bestOpponentAttack']['attackerTag'] ?? ''] ?? ($player['bestOpponentAttack']['attackerTag'] ?? 'Unknown') }}
+                    </span>
                     <div class="flex items-center">
                         @for($i = 0; $i < ($player['bestOpponentAttack']['stars'] ?? 0); $i++)
                             <span class="material-symbols-outlined text-yellow-400 text-xs">star</span>
+                        @endfor
+                        @for($i = 0; $i < 3 - ($player['bestOpponentAttack']['stars'] ?? 0); $i++)
+                            <span class="material-symbols-outlined text-gray-600 text-xs">star</span>
                         @endfor
                         <span class="ml-1 text-white">{{ $player['bestOpponentAttack']['destructionPercentage'] ?? 0 }}%</span>
                     </div>

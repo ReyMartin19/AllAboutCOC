@@ -1,7 +1,9 @@
 @extends('layouts.layout')
 
 @section('content')
+
 <div class="max-w-7xl mx-auto mt-6 mb-8 px-4 sm:px-6">
+
     {{-- Header --}}
     <div class="flex items-center justify-between mb-8">
         <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors flex items-center space-x-2">
@@ -111,5 +113,5 @@
         </script>
     @endif
 </div>
-@endsection
 
+@endsection

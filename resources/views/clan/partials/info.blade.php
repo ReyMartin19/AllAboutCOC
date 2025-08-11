@@ -1,53 +1,52 @@
 <div class="rounded-lg overflow-hidden shadow-xl p-4 md:p-6 space-y-6">
     @if (!empty($clan['description']))
-    <div class="bg-gray-800 p-6 rounded-xl shadow-sm">
-        <!-- Basic Clan Info -->
-        <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-            <!-- Clan Badge -->
-            <div class="relative group">
-                <div class="w-24 h-24 md:w-32 md:h-32 p-4 rounded-full bg-gray-800 border-2 border-blue-500 flex items-center justify-center overflow-hidden transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-blue-500/20">
-                    <img
-                        src="{{ $clan['badgeUrls']['large'] }}"
-                        alt="Clan Badge"
-                        class="w-full h-full object-cover"
-                    />
+        <div class="bg-gray-800 p-6 rounded-xl shadow-sm">
+            <!-- Basic Clan Info -->
+            <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                <!-- Clan Badge -->
+                <div class="relative group">
+                    <div class="w-24 h-24 md:w-32 md:h-32 p-4 rounded-full bg-gray-800 border-2 border-blue-500 flex items-center justify-center overflow-hidden transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-blue-500/20">
+                        <img
+                            src="{{ $clan['badgeUrls']['large'] }}"
+                            alt="Clan Badge"
+                            class="w-full h-full object-cover"
+                        />
+                    </div>
+                    <div class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs md:text-sm font-bold rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
+                        <span>{{ $clan['clanLevel'] }}</span>
+                    </div>
                 </div>
-                <div class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs md:text-sm font-bold rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
-                    <span>{{ $clan['clanLevel'] }}</span>
+
+                <!-- Clan Name, Tag, Description -->
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">{{ $clan['name'] }}</h1>
+                    <p class="text-gray-400 text-sm md:text-base font-mono mb-2">{{ $clan['tag'] }}</p>
+                    <p class="text-gray-300 text-sm md:text-base italic max-w-md">
+                        {{ $clan['description'] ? $clan['description'] : 'No description provided.' }}
+                    </p>
                 </div>
             </div>
 
-            <!-- Clan Name, Tag, Description -->
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">{{ $clan['name'] }}</h1>
-                <p class="text-gray-400 text-sm md:text-base font-mono mb-2">{{ $clan['tag'] }}</p>
-                <p class="text-gray-300 text-sm md:text-base italic max-w-md">
-                    {{ $clan['description'] ? $clan['description'] : 'No description provided.' }}
-                </p>
+            <!-- Clan Stats -->
+            <div class="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
+                    <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Clan Points</p>
+                    <p class="text-white text-lg font-semibold">{{ number_format($clan['clanPoints']) }}</p>
+                </div>
+                <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
+                    <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Builder Base</p>
+                    <p class="text-white text-lg font-semibold">{{ number_format($clan['clanBuilderBasePoints']) }}</p>
+                </div>
+                <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
+                    <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Capital Points</p>
+                    <p class="text-white text-lg font-semibold">{{ number_format($clan['clanCapitalPoints']) }}</p>
+                </div>
+                <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
+                    <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Members</p>
+                    <p class="text-white text-lg font-semibold">{{ $clan['members'] }}/50</p>
+                </div>
             </div>
         </div>
-
-        <!-- Clan Stats -->
-        <div class="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
-                <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Clan Points</p>
-                <p class="text-white text-lg font-semibold">{{ number_format($clan['clanPoints']) }}</p>
-            </div>
-            <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
-                <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Builder Base</p>
-                <p class="text-white text-lg font-semibold">{{ number_format($clan['clanBuilderBasePoints']) }}</p>
-            </div>
-            <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
-                <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Capital Points</p>
-                <p class="text-white text-lg font-semibold">{{ number_format($clan['clanCapitalPoints']) }}</p>
-            </div>
-            <div class="bg-gray-800/70 rounded-lg p-3 transition-all duration-300 hover:bg-gray-800 hover:shadow-md hover:shadow-blue-500/10">
-                <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Members</p>
-                <p class="text-white text-lg font-semibold">{{ $clan['members'] }}/50</p>
-            </div>
-        </div>
-    </div>
-
     @endif
 
     {{-- Clan Details Tabs --}}
@@ -144,55 +143,54 @@
         </div>
     </div>
 
-    {{-- Optional: JS to toggle content, animation, or show more --}}
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Description read more/less
-        const desc = document.getElementById('clan-description');
-        if (desc && desc.textContent.length > 300) {
-            const original = desc.textContent;
-            desc.textContent = original.slice(0, 300) + '...';
-            
-            const btn = document.createElement('button');
-            btn.textContent = 'Read More';
-            btn.className = 'ml-2 text-blue-400 underline text-sm';
-            btn.onclick = function () {
-                desc.textContent = original;
-                btn.remove();
-            };
-            desc.insertAdjacentElement('afterend', btn);
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Description read more/less
+            const desc = document.getElementById('clan-description');
+            if (desc && desc.textContent.length > 300) {
+                const original = desc.textContent;
+                desc.textContent = original.slice(0, 300) + '...';
+                
+                const btn = document.createElement('button');
+                btn.textContent = 'Read More';
+                btn.className = 'ml-2 text-blue-400 underline text-sm';
+                btn.onclick = function () {
+                    desc.textContent = original;
+                    btn.remove();
+                };
+                desc.insertAdjacentElement('afterend', btn);
+            }
 
-        // Tab functionality
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabPanels = document.querySelectorAll('.tab-panel');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active state from all buttons and panels
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('text-blue-400', 'border-b-2', 'border-blue-500');
-                    btn.classList.add('text-gray-400');
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active state from all buttons and panels
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-blue-400', 'border-b-2', 'border-blue-500');
+                        btn.classList.add('text-gray-400');
+                    });
+                    
+                    tabPanels.forEach(panel => {
+                        panel.classList.add('hidden');
+                        panel.classList.remove('active');
+                    });
+                    
+                    // Add active state to clicked button
+                    button.classList.add('text-blue-400', 'border-b-2', 'border-blue-500');
+                    button.classList.remove('text-gray-400');
+                    
+                    // Show corresponding panel
+                    const tabId = button.getAttribute('data-tab') + '-tab';
+                    const activePanel = document.getElementById(tabId);
+                    if (activePanel) {
+                        activePanel.classList.remove('hidden');
+                        activePanel.classList.add('active');
+                    }
                 });
-                
-                tabPanels.forEach(panel => {
-                    panel.classList.add('hidden');
-                    panel.classList.remove('active');
-                });
-                
-                // Add active state to clicked button
-                button.classList.add('text-blue-400', 'border-b-2', 'border-blue-500');
-                button.classList.remove('text-gray-400');
-                
-                // Show corresponding panel
-                const tabId = button.getAttribute('data-tab') + '-tab';
-                const activePanel = document.getElementById(tabId);
-                if (activePanel) {
-                    activePanel.classList.remove('hidden');
-                    activePanel.classList.add('active');
-                }
             });
         });
-    });
     </script>
 </div>

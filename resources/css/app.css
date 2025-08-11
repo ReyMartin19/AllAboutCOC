@@ -16,3 +16,11 @@
 .active-tab {
     @apply text-white border-b-3 border-blue-500;
 }
+
+/* Responsive nav custom styles */
+@media (max-width: 640px) {
+  nav[x-data] .mobile-menu {
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+  }
+}

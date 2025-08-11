@@ -28,23 +28,20 @@
 
             <!-- Tab Content -->    
             <div id="members-tab" class="tab-content">
-                @include('clan.partials.members', ['clan' => $clan])
+                @include('clan.partials.tabs.members', ['clan' => $clan])
             </div>
 
             <div id="clan-war-tab" class="tab-content hidden">
-                @include('clan.partials.war', ['clan' => $clan])
+                @include('clan.partials.tabs.war', ['clan' => $clan])
             </div>
             
             <div id="cwl-tab" class="tab-content hidden">
-                @include('clan.partials.cwl', ['clan' => $clan])
+                @include('clan.partials.tabs.cwl', ['clan' => $clan])
             </div>
 
             <div id="history-tab" class="tab-content hidden">
-                @include('clan.partials.history', ['clan' => $clan])
+                @include('clan.partials.tabs.history', ['clan' => $clan])
             </div>
-
-            
-            
         @else
             <div class="bg-gray-800 text-center text-gray-400 py-12 rounded-lg border border-gray-700">
                 <p class="text-xl font-semibold">Clan data not available.</p>
@@ -57,58 +54,58 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
 
-    if (!tabButtons.length || !tabContents.length) return;
+        if (!tabButtons.length || !tabContents.length) return;
 
-    // Function to activate a tab
-    const activateTab = (button) => {
-        const tabId = button.getAttribute('data-tab') + '-tab';
+        // Function to activate a tab
+        const activateTab = (button) => {
+            const tabId = button.getAttribute('data-tab') + '-tab';
 
-        // Hide all tab contents
-        tabContents.forEach(tab => tab.classList.add('hidden'));
+            // Hide all tab contents
+            tabContents.forEach(tab => tab.classList.add('hidden'));
 
-        // Remove active styles from all buttons
-        tabButtons.forEach(btn => {
-            btn.classList.remove('text-white', 'bg-gray-800/50', 'rounded-t-lg', 'border-b-2', 'border-blue-600');
-            btn.classList.add('text-gray-400');
+            // Remove active styles from all buttons
+            tabButtons.forEach(btn => {
+                btn.classList.remove('text-white', 'bg-gray-800/50', 'rounded-t-lg', 'border-b-2', 'border-blue-600');
+                btn.classList.add('text-gray-400');
+            });
+
+            // Show selected tab
+            const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.classList.remove('hidden');
+                } else {
+                    console.error(`Tab content not found for: ${tabId}`);
+                }
+
+            // Activate current button
+            button.classList.remove('text-gray-400');
+            button.classList.add('text-white', 'bg-gray-800/50', 'rounded-t-lg', 'border-b-2', 'border-blue-600');
+        };
+
+        // Set up click handlers
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                activateTab(button);
+                window.location.hash = button.getAttribute('data-tab');
+            });
         });
 
-        // Show selected tab
-        const selectedTab = document.getElementById(tabId);
-            if (selectedTab) {
-                selectedTab.classList.remove('hidden');
-            } else {
-                console.error(`Tab content not found for: ${tabId}`);
-            }
-
-        // Activate current button
-        button.classList.remove('text-gray-400');
-        button.classList.add('text-white', 'bg-gray-800/50', 'rounded-t-lg', 'border-b-2', 'border-blue-600');
-    };
-
-    // Set up click handlers
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            activateTab(button);
-            window.location.hash = button.getAttribute('data-tab');
-        });
-    });
-
-    // Activate first tab by default if no hash in URL
-    if (!window.location.hash) {
-        activateTab(tabButtons[0]);
-    } else {
-        // Try to activate tab based on URL hash
-        const hashTab = document.querySelector(`.tab-btn[data-tab="${window.location.hash.substring(1)}"]`);
-        if (hashTab) {
-            activateTab(hashTab);
-        } else {
+        // Activate first tab by default if no hash in URL
+        if (!window.location.hash) {
             activateTab(tabButtons[0]);
+        } else {
+            // Try to activate tab based on URL hash
+            const hashTab = document.querySelector(`.tab-btn[data-tab="${window.location.hash.substring(1)}"]`);
+            if (hashTab) {
+                activateTab(hashTab);
+            } else {
+                activateTab(tabButtons[0]);
+            }
         }
-    }
-});
+    });
 </script>
 
 <style>
