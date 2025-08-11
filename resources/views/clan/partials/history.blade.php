@@ -28,13 +28,43 @@
                 }
             }
         }
+        // Safe date parsing function
+        function safeParseDate($dateString) {
+            if (empty($dateString)) return null;
+            
+            $formats = [
+                'Ymd\THis.v\Z',  // 20231201T120000.000Z
+                'Y-m-d\TH:i:s.v\Z', // 2023-12-01T12:00:00.000Z
+                'Y-m-d\TH:i:s\Z',   // 2023-12-01T12:00:00Z
+                'Y-m-d\TH:i:s',     // 2023-12-01T12:00:00
+                'Y-m-d H:i:s',      // 2023-12-01 12:00:00
+            ];
+            
+            foreach ($formats as $format) {
+                try {
+                    return \Carbon\Carbon::createFromFormat($format, $dateString);
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+            
+            // If all formats fail, try parsing as ISO string
+            try {
+                return \Carbon\Carbon::parse($dateString);
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+        
         usort($allCwlWars, function ($a, $b) {
             $aRound = $a['round'] ?? 999; // Push warLog wars to end
             $bRound = $b['round'] ?? 999;
             if ($aRound === $bRound) {
-                $aTime = isset($a['endTime']) ? \Carbon\Carbon::createFromFormat('Ymd\THis.v\Z', $a['endTime'])->timestamp : 0;
-                $bTime = isset($b['endTime']) ? \Carbon\Carbon::createFromFormat('Ymd\THis.v\Z', $b['endTime'])->timestamp : 0;
-                return $bTime <=> $aTime;
+                $aTime = safeParseDate($a['endTime'] ?? null);
+                $bTime = safeParseDate($b['endTime'] ?? null);
+                $aTimestamp = $aTime ? $aTime->timestamp : 0;
+                $bTimestamp = $bTime ? $bTime->timestamp : 0;
+                return $bTimestamp <=> $aTimestamp;
             }
             return $bRound <=> $aRound; // Newest round first
         });

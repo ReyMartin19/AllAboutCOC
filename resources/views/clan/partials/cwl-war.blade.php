@@ -25,11 +25,35 @@
             @php
                 use Carbon\Carbon;
 
-                try {
-                    $start = Carbon::createFromFormat('Ymd\THis.v\Z', $war['startTime'] ?? '');
-                } catch (\Exception $e) {
-                    $start = null;
+                // Safe date parsing
+                function safeParseDate($dateString) {
+                    if (empty($dateString)) return null;
+                    
+                    $formats = [
+                        'Ymd\THis.v\Z',  // 20231201T120000.000Z
+                        'Y-m-d\TH:i:s.v\Z', // 2023-12-01T12:00:00.000Z
+                        'Y-m-d\TH:i:s\Z',   // 2023-12-01T12:00:00Z
+                        'Y-m-d\TH:i:s',     // 2023-12-01T12:00:00
+                        'Y-m-d H:i:s',      // 2023-12-01 12:00:00
+                    ];
+                    
+                    foreach ($formats as $format) {
+                        try {
+                            return Carbon::createFromFormat($format, $dateString);
+                        } catch (\Exception $e) {
+                            continue;
+                        }
+                    }
+                    
+                    // If all formats fail, try parsing as ISO string
+                    try {
+                        return Carbon::parse($dateString);
+                    } catch (\Exception $e) {
+                        return null;
+                    }
                 }
+
+                $start = safeParseDate($war['startTime'] ?? null);
             @endphp
 
             <div class="italic text-xs text-gray-400">
